@@ -1,0 +1,32 @@
+/*-------------------------------------------------------------------*/
+/*                             Header-Viewer                         */
+/*-------------------------------------------------------------------*/
+
+/* style for the book viewer pages, creating a narrower header area */
+
+div#header {
+  background: url("images/header_viewer.png") no-repeat bottom left;
+  height: 75px;
+  margin: 0;
+  padding: 0;
+}
+
+#logo {
+	float:left;
+	height: 75px;
+	width: 205px;
+	margin: 0 10px 0 0;
+	padding:0;
+}
+
+div#head-elements {
+	height: 32px;
+	margin:0 0 0 15px;
+	padding:0;
+}
+
+#search-box {
+	float:right;
+	margin: 10px 10px 0 0;
+	padding:0;
+}

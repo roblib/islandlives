@@ -1,0 +1,131 @@
+/* $Id: */
+
+form#islandora-solr-search-block-form select#edit-type1,
+form#islandora-solr-search-block-form select#edit-type2,
+form#islandora-solr-search-block-form select#edit-type3
+{
+  width:100%;
+}
+
+form#islandora-solr-search-block-form input#edit-fedora-terms1,
+form#islandora-solr-search-block-form input#edit-fedora-terms2,
+form#islandora-solr-search-block-form input#edit-fedora-terms3,
+form#islandora-solr-simple-search-form input#edit-islandora-simple-search-query
+{
+  width:96%;
+}
+
+.islandora_solr_search_search_wrap
+{
+  padding-bottom: 1em;
+}
+
+.islandora_solr_search_facet_name,
+.islandora_solr_search_facet_title
+{
+  font-weight:bold;
+}
+
+.islandora_solr_search_facets ul li
+{
+  font-size:90%;
+  line-height:1.3em;
+}
+
+img.islandora_solr_add_remove_link
+{
+  vertical-align: middle;
+}
+
+.islandora_solr_search_enabled_filters ul.filter_list li
+{
+  list-style: none inside none;
+  padding: 0;
+  background-image: none;
+}
+
+.islandora-solr-search .item-list ul.search-results {
+  margin: 1em 0 0 0;
+  padding: 0;
+}
+
+.islandora-solr-search .item-list ul.search-results li {
+  list-style-type: none;
+  list-style-image: none;
+  background: none;
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+
+.islandora-solr-search td.solr-tn-small {
+  width: 10%;
+  padding-right: 10px;
+}
+
+.islandora-solr-detail td.solr-tn-large {
+  width: 20%;
+  padding-right: 10px;
+  vertical-align: top;
+}
+
+.islandora-solr-search .solr-tn-small img {
+  height: 100px;
+}
+
+.islandora-solr-detail .solr-tn-large img {
+  height: 200px;
+}
+
+.islandora-solr-list table,
+.islandora-solr-detail table {
+  margin-right: auto;
+  width:100%;
+}
+
+.islandora-solr-search td,
+.islandora-solr-detail td,
+.islandora-solr-search th,
+.islandora-solr-detail th {
+  padding: 10px;
+}
+
+.islandora-solr-search th .solr-title,
+.islandora-solr-detail th .solr-title {
+font-weight: bold;
+display: block;
+clear: right;
+}
+
+.islandora-solr-search th .solr-details,
+.islandora-solr-detail th .solr-details {
+font-weight: normal;
+}
+
+.islandora-solr-detail td.solr-link {
+  width: 15%;
+}
+
+.islandora-solr-detail .solr-mods-terms {
+  font-weight: bold;
+  text-align: right;
+}
+
+.islandora-solr-search th,
+.islandora-solr-detail th,
+.islandora-solr-search td,
+.islandora-solr-detail td {
+  border: 1px solid #EAEAEA;
+}
+
+.islandora-solr-search td.solr-blank {
+border: 0;
+}
+
+.islandora-solr-search .solr-tn-smallwidth img {
+width:80px;
+}
+
+.solr-grid div.solr-field-title {
+width: 80px;
+white-space: normal;
+}

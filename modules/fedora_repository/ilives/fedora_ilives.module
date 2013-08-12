@@ -1,0 +1,906 @@
+<?php
+
+// $Id$
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function fedora_ilives_menu() {
+  $items = array();
+  $items['fedora/ilives'] = array(
+    'title' => t('Book view'),
+    'page callback' => 'fedora_ilives_create_book_view',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  $items['fedora/ilives_book_viewer'] = array(
+    'title' => t('Book viewer'),
+    'page callback' => 'fedora_ilives_book_viewer',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  $items['fedora/ilives_book_search'] = array(
+    'title' => t('Book viewer'),
+    'page callback' => 'fedora_ilives_book_search',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  $items['fedora/ilives_page_search'] = array(
+    'title' => t('Book viewer'),
+    'page callback' => 'fedora_ilives_page_search',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  $items['fedora/ilives_page_results'] = array(
+    'title' => t('Paged Results'),
+    'page callback' => 'fedora_ilives_create_page_view',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  // This block defines the path and the corresponding callback function.
+  $items['fedora/ilives/retrieve_unapi/js'] = array(
+    'page callback' => 'fedora_ilives_button_retrieve_unapi_ahah', // the AHAH callback function
+    'access arguments' => array('add fedora datastreams'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['islandora/ilives/list'] = array(
+    'page callback' => 'islandora_ilives_list',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+
+  $items['fedora/ilives/index'] = array(
+    'page callback' => 'ilives_title_index',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+  $items['islandora/ilives/index'] = array(
+    'page callback' => 'ilives_index',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('view fedora collection'),
+  );
+
+  return $items;
+}
+
+function fedora_ilives_block($op = 'list', $delta = 0, $edit = array()) {
+  // The $op parameter determines what piece of information is being requested.
+  switch ($op) {
+    case 'list':
+      // If $op is "list", we just need to return a list of block descriptions.
+      // This is used to provide a list of possible blocks to the administrator,
+      // end users will not see these descriptions.
+      $blocks[0] = array(
+        'info' => t('Book search block'),
+      );
+      $blocks[1] = array(
+        'info' => t('Image rotator and tagger'),
+      );
+      $blocks[2] = array(
+        'info' => t('Simple book search block'),
+      );
+      $blocks[3] = array(
+        'info' => t('Ilives search block'),
+      );
+      $blocks[4] = array(
+        'info' => t('Ilives simple search block'),
+      );
+      return $blocks;
+    case 'configure':
+      // If $op is "configure", we need to provide the administrator with a
+      // configuration form. The $delta parameter tells us which block is being
+      // configured. In this example, we'll allow the administrator to customize
+      // the text of the first block.
+      // If $op is "configure", we need to provide the administrator with a
+      // configuration form. The $delta parameter tells us which block is being
+      // configured. In this example, we'll allow the administrator to customize
+      // the text of the first block.
+      $form = array();
+      switch ($delta) {
+        case 0:
+          // All we need to provide is a text field, Drupal will take care of
+          // the other block configuration options and the save button.
+          $form['fedora_ilives_book_search_block_repeat'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Number of times to repeat search fields'),
+            '#size' => 5,
+            '#description' => t('The number of times you would like the search blocks to be repeated'),
+            '#default_value' => variable_get('fedora_ilives_book_search_block_repeat', t('3')),
+          );
+          break;
+        case 1:
+          // This is the image rotator block.
+          $form['fedora_ilives_image_rotator_block_query'] = array(
+            '#type' => 'textarea',
+            '#title' => t('ITQL Query'),
+            '#description' => t('The ITQL query to return a list of images.'),
+            '#default_value' => variable_get('fedora_ilives_image_rotator_tagger_block_query', 'select $object $title from <#ri>
+where $object <info:fedora/fedora-system:def/relations-external#isMemberOfCollection> <info:fedora/ilives:figures>
+and $object <fedora-model:state> <info:fedora/fedora-system:def/model#Active>
+and $object <dc:title> $title'),
+          );
+          break;
+        case 2:
+          // All we need to provide is a text field, Drupal will take care of
+          // the other block configuration options and the save button.
+          $form['fedora_ilives_simple_book_search_block_title'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Title'),
+            '#size' => 15,
+            '#description' => t('The title of the block'),
+            '#default_value' => variable_get('fedora_ilives_simple_book_search_block_title', t('Title')),
+          );
+          break;
+      }
+
+      return $form;
+    case 'save':
+      // If $op is "save", we need to save settings from the configuration form.
+      // Since the first block is the only one that allows configuration, we
+      // need to check $delta to make sure we only save it.
+      switch ($delta) {
+        case 0:
+          // Have Drupal save the string to the database.
+          variable_set('fedora_ilives_book_search_block_repeat', $edit['fedora_ilives_book_search_block_repeat']);
+          break;
+        case 1:
+          variable_set('fedora_ilives_image_rotator_tagger_block_query', $edit['fedora_ilives_image_rotator_block_query']);
+          break;
+        case 2:
+          // Have Drupal save the string to the database.
+          variable_set('fedora_ilives_simple_book_search_block_title', $edit['fedora_ilives_simple_book_search_block_title']);
+          break;
+      }
+      return;
+    case 'view': default:
+      // If $op is "view", then we need to generate the block for display
+      // purposes. The $delta parameter tells us which block is being requested.
+      switch ($delta) {
+        case 0:
+          // The subject is displayed at the top of the block. Note that it
+          // should be passed through t() for translation.
+          $block['subject'] = t('Book advanced search');
+          // The content of the block is typically generated by calling a custom
+          // function.
+          $block['content'] = drupal_get_form('fedora_ilives_book_search_form');
+          break;
+        case 1:
+          module_load_include('inc', 'fedora_ilives', 'image_rotator_tagger_block');
+          $block['subject'] = t('Random repository image');
+          $block['content'] = _fedora_image_rotator_tagger_block_content();
+          break;
+        case 2:
+          // The subject is displayed at the top of the block. Note that it
+          // should be passed through t() for translation.
+          $block['subject'] = t('Simple Book Search');
+          // The content of the block is typically generated by calling a custom
+          // function.
+          $block['content'] = drupal_get_form('fedora_ilives_simple_book_search_form');
+          break;
+
+        case 3:
+          $block['subject'] = t('Island Lives Solr Search');
+          // The content of the block is typically generated by calling a custom
+          // function.
+          $block['content'] = drupal_get_form('ilives_solr_search_block_form');
+          break;
+
+        case 4:
+          $block['subject'] = t('Island Lives Simple Solr Search');
+          // The content of the block is typically generated by calling a custom
+          // function.
+          $block['content'] = drupal_get_form('ilives_solr_simple_search_block_form');
+          break;
+      }
+
+      return $block;
+  }
+}
+
+function fedora_ilives_book_viewer($pid) {
+  global $user;
+  $qs = '';
+  if ($user->uid != 0) {
+//      $qs = '?uid=' . base64_encode($user->name . ':' . $user->sid);
+    $qs = '?uid=' . base64_encode($user->name . ':' . $user->pass);
+  }
+
+  $viewer_url = variable_get('fedora_base_url', '') . '/get/' . $pid . '/ilives:viewerSdef/getViewer' . $qs;
+  $html = '<iframe src="' . $viewer_url . '" frameborder="0" scrolling="no" style="width: 100%; height: 800px;">Errors: unable to load viewer</iframe>';
+  $fieldset = array(
+    '#title' => t('Viewer - ') . $pid,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#value' => $html);
+  drupal_add_css(path_to_theme() . '/header-viewer.css', 'theme');
+  return theme('fieldset', $fieldset);
+}
+
+/**
+ *
+ * @global user $user
+ * @param string $pid
+ * @param string $query
+ * @return string
+ *
+ * Creates detail view of selected book
+ */
+function fedora_ilives_create_book_view($pid, $query = NULL) {
+  drupal_add_css(drupal_get_path('module', 'islandora_solr_search') . '/islandora_solr_search.css');
+  global $user;
+  $boilerplate = "This material is provided for research, education, and private use only.  For all other uses, please contact the rights holder.  All responsibilities for copyright are the responsibility of the user.";
+  $roles = $user->roles;
+  $adminRoles = array('administrator', 'super user', 'superuser');
+  $editRoles = array('bookeditor', 'administrator', 'super user', 'superuser');
+  $isAdmin = FALSE;
+  $isEditor = FALSE;
+  foreach ($adminRoles as $role) {
+    if (in_array($role, $roles)) {
+      $isAdmin = TRUE;
+    }
+  }
+
+  foreach ($editRoles as $role) {
+    if (in_array($role, $roles)) {
+      $isEditor = TRUE;
+    }
+  }
+  module_load_include('inc', 'fedora_repository', 'api/fedora_item');
+  $item = new Fedora_Item($pid);
+  $datastreams = $item->get_datastreams_list_as_array();
+  $base = base_path();
+  module_load_include('inc', 'fedora_repository', 'ObjectHelper');
+  $path = drupal_get_path('module', 'Fedora_Repository');
+  $objectHelper = new ObjectHelper;
+  $xml = $objectHelper->getStream($pid, 'MODS');
+  $dc_xml = $objectHelper->getStream($pid, 'DC');
+  if (!$dc_xml) {
+    drupal_set_message(t('Object does not exist.'), 'error');
+    return '';
+  }
+  $simpleDCxml = simplexml_load_string($dc_xml);
+  $simpleDCxml->registerXPathNamespace('dc', 'http://purl.org/dc/elements/1.1/');
+  $types = $simpleDCxml->xpath('//dc:type');
+  $ingested = FALSE;
+  if (!empty($types)) {
+    foreach ($types as $type) {
+
+      if ($type == 'ingested') {
+        $ingested = TRUE;
+      }
+    }
+  }
+  if(array_key_exists('PDF', $datastreams)){
+	$ingested = TRUE;
+  }
+
+  if (!isset($pid)) {
+    drupal_set_message(t('Error getting book view, no identifier specified.'));
+    return;
+  }
+
+  $simpleMods = simplexml_load_string($xml);
+
+  $pidParts = explode(':', $pid);
+  if ($ingested) {
+    $viewLink = l('Read Online', 'fedora/ilives_book_viewer/' . $pid, array('attributes' => array('class' => 'solr-readonline')));
+  }
+  $borrowLink = l('Print availability?', 'http://islandpines.roblib.upei.ca/opac/en-CA/skin/roblib/xml/rdetail.xml?r=' . $pidParts[1], array('attributes' => array('class' => 'solr-borrow')));
+  if (array_key_exists('PDF', $datastreams)) {
+    $downloadLink = l('Download', 'fedora/repository/' . $pid . '/PDF/' . $pid . '/Full Text.pdf', array('attributes' => array('class' => 'solr-download')));
+  }
+  if ($isEditor) {
+    $editLink = l('Edit', 'teieditor/' . $pid, array('attributes' => array('class' => 'solr-edit')));
+  }
+
+  if ($isAdmin) {
+    $adminLink = l('Admin', 'fedora/repository/' . $pid, array('attributes' => array('class' => 'solr-admin')));
+  }
+
+
+
+
+  $nonSort = $simpleMods->titleInfo[0]->nonSort;
+  if ($nonSort) {
+    $nonSort .= " ";
+  }
+  $title = $simpleMods->titleInfo[0]->title;
+  $title = $nonSort . $title;
+  $subtitle = $simpleMods->titleInfo[0]->subTitle;
+  if ($ingested) {
+    $titleTag = "<a href='${base}fedora/ilives_book_viewer/$pid'>$title : $subtitle</a>";
+  }
+  else {
+    $titleTag = $title . ' : ' . $subtitle;
+  }
+
+  foreach ($simpleMods->note as $note) {
+    foreach ($note->attributes() as $key => $value) {
+      if ($key == "type" && $value == 'statement of responsibility') {
+        $sor = $note;
+      }
+    }
+  }
+
+  if ($ingested) {
+    $thumbTD = "<a href='${base}fedora/ilives_book_viewer/$pid'><img src='${base}fedora/repository/$pid/TN' alt='No image available' />";
+  }
+  else {
+    $thumbTD = "<img src='${base}fedora/repository/$pid/TN' alt='No image available' />";
+  }
+
+
+  foreach ($simpleMods->originInfo[0]->place as $place) {
+    foreach ($place->placeTerm as $placeHolder) {
+      foreach ($placeHolder->attributes() as $key => $value) {
+        if ($key == "type" && $value == 'text') {
+          $placeName = $placeHolder;
+        }
+      }
+    }
+  }
+  $publisher = $simpleMods->originInfo[0]->publisher;
+  $dateIssued = $simpleMods->originInfo[0]->dateIssued;
+  $extent = $simpleMods->physicalDescription[0]->extent[0];
+
+  foreach ($simpleMods->subject as $subject) {
+    $searchSpacer = '';
+    $and = '';
+    $topic = $subject->topic[0];
+    $geographic = $subject->geographic[0];
+    if ($topic && $geographic) {
+      $searchSpacer = " - ";
+      $and = ' AND ';
+    }
+
+    if ($topic) {
+      $searchTopic = 'mods.subject:(' . $topic . ')';
+      // $subjectString .= l($topic, 'islandora/solr/search/mods.subject(' . $topic . ')') . '<br />';
+    }
+    if ($geographic) {
+      $searchGeographic = 'mods.subject:(' . $geographic . ')';
+      // $subjectString .= l($geographic, 'islandora/solr/search/mods.subject(' . $geographic . ')') . '<br />';
+    }
+    if ($topic || $geographic) {
+      $subjectString .= l($topic . $searchSpacer . $geographic, 'islandora/solr/search/' . $searchTopic . $and . $searchGeographic) . '<br />';
+    }
+  }
+
+  $abstract = $simpleMods->abstract[0];
+  $accessCondition = $simpleMods->accessCondition[0];
+  if (!$accessCondition) {
+    $accessCondition = $boilerplate;
+  }
+
+
+  $elementsArray = array(
+    'title' => $titleTag,
+    'sor' => $sor,
+    'thumbTD' => $thumbTD,
+    'place' => $placeName,
+    'publisher' => $publisher,
+    'date' => $dateIssued,
+    'view' => $viewLink,
+    'extent' => $extent,
+    'borrow' => $borrowLink,
+    'subject' => $subjectString,
+    'download' => $downloadLink,
+    'abstract' => $abstract,
+    'edit' => $editLink,
+    'access' => $accessCondition,
+    'admin' => $adminLink
+  );
+
+  $output .= <<< html
+   <div class ="islandora-solr-detail">
+    <table border>
+      <tr><th colspan="4"><span class="solr-title">$titleTag</span><span class="solr-details">$sor </span></th></tr>
+      <tr>
+        <td rowspan="5" class ="solr-tn-large">$thumbTD</td>
+        <td class="solr-mods-terms">IMPRINT</td>
+        <td class ="solr-mods-values"> $placeName $publisher $dateIssued</td>
+        <td class="solr-link" >$viewLink</td>
+      </tr>
+      <tr>
+        <td class="solr-mods-terms">EXTENT</td>
+        <td class ="solr-mods-values">$extent</td>
+        <td class="solr-link">$borrowLink</td>
+      </tr>
+      <tr>
+        <td class="solr-mods-terms">SUBJECT</td>
+        <td class ="solr-mods-values">$subjectString</td>
+        <td class="solr-link">$downloadLink</td>
+      </tr>
+      <tr>
+        <td class="solr-mods-terms">DESCRIPTION</td>
+        <td class ="solr-mods-values">$abstract</td>
+        <td class="solr-link">$editLink</td>
+      </tr>
+      <tr>
+        <td class="solr-mods-terms">USE</td>
+        <td class ="solr-mods-values">$accessCondition</td>
+        <td class="solr-link">$adminLink</td>
+      </tr>
+      <tr>
+        <td colspan="4"><!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style" style="float:right">
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_preferred_2"></a>
+<a class="addthis_button_preferred_3"></a>
+<a class="addthis_button_preferred_4"></a>
+<a class="addthis_button_compact"></a>
+<a class="addthis_counter addthis_bubble_style"></a>
+</div>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=islandlives"></script>
+<!-- AddThis Button END --></td>
+      </tr>
+    </table>
+   </div>
+html;
+
+
+
+
+  return $output;
+}
+
+function fedora_ilives_create_page_view($pid, $query, $pageNum =1) {
+  global $solr_title;
+  $GLOBALS['bookPid'] = $pid;
+  module_load_include('module', 'islandora_solr_search');
+  $output = fedora_ilives_create_book_view($pid);
+  preg_match('/\<span class="solr-title"\>.+?\<\/span\>/', $output, $matches);
+  $solr_title = $matches[0];
+  $pid = str_replace(':', '\:', $pid);
+  //$query .= ' rels.isMemberOf:info\:fedora/' . $pid;
+  $query = str_replace('AND dc.type:(collection)', '', $query);
+  $query = str_replace('AND dc.type:collection', '', $query);
+  $query = str_replace('AND type:(collection)', '', $query);
+  $query = str_replace('AND type:collection', '', $query);
+  $output .= islandora_solr_search($query, $pageNum);
+
+  return $output;
+}
+
+function convert_query_to_page_query($query, $pid) {
+  $newQuery = substr($query, 0, strlen($query) - 23);
+  $pid = str_replace(':', '?', $pid);
+  $newQuery = $newQuery . " AND PID:$pid* AND dc.type:Text";
+  //$newQuery=htmlentities(urlencode($newQuery));
+  return $newQuery;
+}
+
+/**
+ * Custom form element to do our nice images.
+ */
+function fedora_ilives_elements() {  // Change this line
+  $type['imagebutton'] = array(
+    '#input' => TRUE,
+    '#button_type' => 'submit',
+    '#executes_submit_callback' => TRUE,
+    '#name' => 'op',
+    '#process' => array('hook_imagebutton_process' => array()),
+  );
+  return $type;
+}
+
+function theme_imagebutton($element) {
+  return '<input  style="background:url(\'\'); border:0px; width:10px; padding:0px,0px,0px,0px;" type="image" class="form-'
+  . $element['#button_type'] . '" name="' . $element['#name'] . '" id="' . $element['#id'] . '" value="'
+  . check_plain($element['#default_value']) . '" '
+  . drupal_attributes($element['#attributes']) . ' src="' . $element['#image'] . '" alt="' . $element['#title']
+  . '" title="' . $element['#title'] . "\" />\n";
+}
+
+/**
+ * Implementation of hook_theme() to register how to theme image buttons.
+ */
+function fedora_ilives_theme() {
+  return array(
+    'imagebutton' => array(
+      'arguments' => array('form' => NULL),
+    ),
+    'fedora_ilives_book_search_form' => array(
+      'arguments' => array('form' => NULL),
+    ),
+    'fedora_ilives_simple_book_search_form' => array(
+      'arguments' => array('form' => NULL),
+    ),
+    'ilives_solr_search_block_form' => array(
+      'arguments' => array('form' => NULL,)
+    ),
+    'ilives_detail_view' => array(
+      'arguments' => array('form' => NULL,)
+    ),
+  );
+}
+
+//return array(
+//    'fedora_repository_mnpl_advanced_search_form' => array(
+//      'arguments' => array('form' => NULL)
+//    )
+//  );
+
+function theme_fedora_ilives_book_search_form($form) {
+  module_load_include('inc', 'fedora_repository', 'SearchClass');
+  $advanced_search_form = new SearchClass();
+  $repeats = variable_get('fedora_ilives_book_search_block_repeat', t('3'));
+  return $advanced_search_form->theme_advanced_search_form($form, $repeats);
+}
+
+function fedora_ilives_simple_book_search_form($form) {
+  $form = array();
+  $form['search_type']['type1'] = array(
+    '#title' => t(''),
+    '#type' => 'hidden',
+    '#default_value' => 'tei.fullText'
+  );
+  $form['fedora_terms1'] = array(
+    '#size' => '24',
+    '#type' => 'textfield',
+    '#title' => t(''),
+    '#required' => TRUE,
+    '#default_value' => ''
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('search')
+  );
+  return $form;
+}
+
+function fedora_ilives_simple_book_search_form_submit($form, &$form_state) {
+  $type_id = $form_state['values']['type'];
+  $searchString = $form_state['values']['type1'] . ':' . $form_state['values']['fedora_terms1'];
+  $searchString = trim($searchString) . '+AND+dc.type:collection';
+  $form_state['redirect'] = "fedora/ilives_book_search/$searchString";
+  //drupal_goto("fedora/ilives_book_search/$searchString");
+}
+
+function fedora_ilives_book_search_form() {
+  module_load_include('inc', 'fedora_repository', 'SearchClass');
+  $searchClass = new SearchClass();
+  $repeats = variable_get('fedora_ilives_book_search_block_repeat', t('3'));
+  $path = drupal_get_path('module', 'Fedora_Repository') . '/ilives';
+  $query = NULL;
+  if (arg(1) == 'ilives_book_search' && arg(2) != 'dc.type:ingested') {
+    $length = strlen(arg(2));
+    if (($test = strpos(arg(2), 'dc.type:collection')) > 0) {
+      $length = $test - 5; //get rid of the AND
+    }
+    $query = trim(substr(arg(2), 0, $length));
+  }
+  return $searchClass->build_advanced_search_form($repeats, $path, $query);
+}
+
+function fedora_ilives_book_search_form_submit($form, &$form_state) {
+  $type_id = $form_state['values']['type'];
+  $repeat = variable_get('fedora_ilives_book_search_block_repeat', t('3'));
+  $searchString = $form_state['values']['type1'] . ':' . $form_state['values']['fedora_terms1'];
+  if ($form_state['values']['fedora_terms2'] != '') {
+    $searchString .= '+' . $form_state['values']['andor1'] . '+' . $form_state['values']['type2'] . ':' . $form_state['values']['fedora_terms2'];
+  }
+  if ($repeat > 2 && $repeat < 9) {
+    for ($i = 3; $i < $repeat + 1; $i++) {
+      $t = $i - 1;
+      if ($form_state['values']["fedora_terms$i"] != '') {
+        $searchString .= '+' . $form_state['values']["andor$t"] . '+' . $form_state['values']["type$i"] . ':' . $form_state['values']["fedora_terms$i"];
+      }
+    }
+  }
+  $searchString = trim($searchString) . '+AND+dc.type:collection';
+  $form_state['redirect'] = "fedora/ilives_book_search/$searchString";
+  //drupal_goto("fedora/ilives_book_search/$searchString");
+}
+
+function fedora_ilives_book_search($query, $startPage = 1) {
+  module_load_include('inc', 'fedora_repository', 'SearchClass');
+  $searchClass = new SearchClass();
+  return $searchClass->custom_search($query, $startPage, '/ilives/xsl/results.xsl', 10);
+}
+
+function retrieve_unapi_MODS_record($url) {
+  $bib_response = drupal_http_request($url);
+  $bib_html = $bib_response->data;
+  $bib_doc = new DOMDocument;
+  @$bib_doc->loadHTML($bib_html);
+  $links = $bib_doc->getElementsByTagName('link');
+  foreach ($links as $link) {
+    if ($link->getAttribute('rel') == 'unapi-server') {
+      $unapi_server = $link->getAttribute('href');
+      break;
+    }
+  }
+  $attrs = $bib_doc->getElementsByTagName('abbr');
+  foreach ($attrs as $attr) {
+    if ($attr->getAttribute('class') == 'unapi-id') {
+
+      $unapi_id = $attr->getAttribute('title');
+      break;
+    }
+  }
+  $mods_url = "$unapi_server?id=$unapi_id&format=mods3";
+  $mods_resp = drupal_http_request($mods_url);
+  $mods_data = $mods_resp->data;
+  return $mods_data;
+}
+
+/**
+ * AHAH callback for the 'match type' select.
+ * This function handles the actual replace and sets the $form and $form_state arrays.
+ * */
+function fedora_ilives_button_retrieve_unapi_ahah() {
+
+  // this part is used to set up $form_state.
+  // In Drupal 7, these next 11 lines will be put in a core utility function.
+  // Just remember you'll need them in D6 when you do AHAH.
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  $form = form_get_cache($form_build_id, $form_state);
+  $args = $form['#parameters'];
+  $form_id = array_shift($args);
+  $form['#post'] = $_POST;
+  $form['#redirect'] = FALSE;
+  $form['#programmed'] = FALSE;
+
+  $form_state['post'] = $_POST;
+  drupal_process_form($form_id, $form, $form_state);
+  $form_state['storage']['step'] = 2;
+  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+  // From here on, we'll add our own code.
+  // We just get the element of $form that needs to be refreshed, and just resubmit that
+  // part through the json call. In this case we want to rebuild the 'kind' <div> wrapper and the
+  // select box it contains
+  $changed_elements = $form['mods']['mods_record'];
+
+
+  unset($changed_elements['#prefix'], $changed_elements['suffix']); // we'll unset the div to make sure it won't be repeated!
+  // the actual JSON call
+  $javascript = drupal_add_js(NULL, NULL, 'header');
+  drupal_json(array(
+    'status' => TRUE,
+    'data' => theme('status_messages') . drupal_render($changed_elements), // rebuild just the part that needs to be changed
+    'settings' => call_user_func_array('array_merge_recursive', $javascript['setting']),
+  ));
+}
+
+/**
+ * This is the handler for the 'type' box: pressing this will refresh the <div> kind wrapper.
+ * */
+function fedora_ilives_retrieve_unapi_submit($form, &$form_state) {
+
+  unset($form_state['submit_handlers']); // unset all the submit handlers in the form
+  form_execute_handlers('submit', $form, $form_state); // execute submit handler
+  $url = $form_state['values']['unapi_url'];
+  $mods = retrieve_unapi_MODS_record($url);
+  $form_state['values']['mods']['mods_record'] = $mods;
+  $mods_save = $form_state['values']; // store all the submitted values in the form
+  $form_state['mods_save'] = $mods_save; // put the values in a new form
+
+  $form_state['rebuild'] = TRUE; // set to true to make sure the form gets rebuild
+  return $mods_save;
+}
+
+function fedora_ilives_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'fedora_repository_admin') {
+    # Custom settings for book module.
+  }
+  elseif ($form_id == 'fedora_repository_demo_objects_form') {
+    if (!Fedora_Item::fedora_item_exists('ilives:bookCModel')) {
+
+      $form['install_demos']['demo_collections']['#options']['ilives:bookCModel'] = 'Book-related content models and service objects';
+      $form['install_demos']['ingest']['#disabled'] = FALSE;
+      $form['#submit'][] = 'fedora_ilives_install_demos_form_submit';
+    }
+    else {
+
+      module_load_include('inc', 'fedora_repository', 'api/fedora_item');
+      $book_item = new Fedora_Item('ilives:bookCModel');
+
+      $form['existing_demos']['ilives:bookCModel'] = array(
+        '#prefix' => '<li>',
+        '#value' => l($book_item->pid, $book_item->url()),
+        '#suffix' => '</li>',
+      );
+    }
+  }
+}
+
+function fedora_ilives_install_demos_form_submit($form, &$form_state) {
+  if ($form_state['values']['demo_collections']['ilives:bookCModel'] == 'ilives:bookCModel') {
+    # The ilives:bookCModel checkbox was checked
+    install_book_content_model_objects();
+  }
+}
+
+function install_book_content_model_objects() {
+  module_load_include('inc', 'fedora_repository', 'api/fedora_item');
+  $allowed_pids_str = variable_get('fedora_pids_allowed', 'default: demo: changeme: Islandora: ilives: ');
+  $allowed_pids = explode(' ', $allowed_pids_str);
+
+  if (!in_array('ilives:', $allowed_pids)) {
+    variable_set('fedora_pids_allowed', $allowed_pids_str . ' ilives:');
+    drupal_set_message('Added ilives: to the set of allowed pidnamespaces.', 'info');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:bookCModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_bookCModel.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:pageCModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_pageCModel.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:jp2Sdef')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_jp2Sdef.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:tei2htmlSdef')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_tei2htmlSdef.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:tei2htmlSdep-pageCModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_tei2htmlSdep-pageCModel.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:viewerSdef')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_viewerSdef.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:viewerSdep-bookCModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_viewerSdep-bookCModel.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:viewerSdep-pageCModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_viewerSdep-pageCModel.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:collection')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_collection.xml');
+  }
+
+  if (!Fedora_Item::fedora_item_exists('ilives:CollectionModel')) {
+    Fedora_Item::ingest_from_foxml_file(drupal_get_path('module', 'fedora_ilives') . '/xml/ilives_CollectionModel.xml');
+  }
+}
+
+function ilives_solr_search_block_form() {
+  global $islandora_query;
+  $configs = explode('~', variable_get('islandora_solr_config_options', 'islandora_solr_search~IslandoraSolrResults.inc~IslandoraSolrResults~displayResults'));
+  $classFile = $configs[1];
+  module_load_include('inc', $configs[0], $configs[1]);
+  $solrClass = $configs[2];
+  $searchClass = new $solrClass();
+  return $searchClass->build_solr_search_form(null, null, $islandora_query);
+}
+
+function theme_ilives_solr_search_block_form($form) {
+  drupal_add_css(drupal_get_path('module', 'islandora_solr_search') . '/islandora_solr_search.css');
+  module_load_include('inc', 'islandora_solr_search', 'IslandoraSolrResults');
+  $advanced_search_form = new IslandoraSolrResults();
+  return $advanced_search_form->theme_solr_search_form($form);
+}
+
+function ilives_solr_search_block_form_submit($form, &$form_state) {
+  require_once(drupal_get_path('module', 'islandora_solr_search') . '/IslandoraSolrResults.inc');
+  $type_id = trim($form_state['values']['type']);
+  $repeat = variable_get('islandora_solr_search_block_repeat', t('3'));
+  $fedora_terms = array();
+  $types = array();
+  $booleans = array();
+
+  for ($fieldNum = 1; $fieldNum <= $repeat; $fieldNum++) {
+    if ($form_state['values']["fedora_terms$fieldNum"]) {
+      $types[] = trim($form_state['values']["type$fieldNum"]);
+      $fedora_terms[] = IslandoraSolrResults::lesser_escape(trim($form_state['values']["fedora_terms$fieldNum"]));
+    }
+    $next = $fieldNum + 1;
+    if ($form_state['values']["fedora_terms$next"] && $form_state['values']["fedora_terms$fieldNum"]) {
+      $booleans[] = trim($form_state['values']["andor$fieldNum"]);
+    }
+  }
+  $_SESSION['islandora_solr']['fedora_terms'] = $fedora_terms;
+  $_SESSION['islandora_solr']['type'] = $types;
+  $_SESSION['islandora_solr']['booleans'] = $booleans;
+  for ($iteration = 0; $iteration < count($fedora_terms); $iteration++) {
+    $searchString .= $types[$iteration] . ":(" . $fedora_terms[$iteration] . ") " . $booleans[$iteration] . " ";
+  }
+
+  //sanitize data
+  $searchString = preg_replace('/\(\W+/', "('", $searchString);
+  $searchString = preg_replace('/\W+\)/', "')", $searchString);
+  $searchString = "($searchString)";
+  $searchString .= " AND dc.type:collection AND -type:image";
+  $searchString = htmlspecialchars(drupal_urlencode($searchString), ENT_QUOTES, 'utf-8', false);
+  $searchString = str_replace('/', '~slsh~', $searchString); //replace the slash so url doesn't break
+    if(!$fedora_terms[0]){
+    $searchString = "type:collection";
+  }
+  drupal_goto("islandora/solr/search/$searchString/1/-");
+}
+
+
+
+function ilives_solr_simple_search_block_form() {
+  $configs = explode('~', variable_get('islandora_solr_config_options', 'islandora_solr_search~IslandoraSolrResults.inc~IslandoraSolrResults~displayResults'));
+  $classFile = $configs[1];
+  module_load_include('inc', $configs[0], $configs[1]);
+  $solrClass = $configs[2];
+  $searchClass = new $solrClass();
+  return $searchClass->build_simple_solr_form();
+}
+
+
+function ilives_solr_simple_search_block_form_submit($form, &$form_state) {
+  $query = $form_state['values']['islandora_simple_search_query'];
+  $searchString = $query;
+  $_SESSION['islandora_solr']['simple'] = $searchString;
+
+  $searchString = '"' . $searchString . '"';
+  $searchString = preg_replace('/\(\W+/', '("', $searchString);
+  $searchString = preg_replace('/\W+\)/', '")', $searchString);
+  $searchString = 'tei.fullText:(' . $searchString . ") AND dc.type:(collection)";
+  $searchString = htmlspecialchars(drupal_urlencode($searchString), ENT_QUOTES, 'utf-8', false);
+  $searchString = str_replace('/', '~slsh~', $searchString); //replace the slash so url doesn't break
+  if (!$query){
+    $searchString = 'type:collection';
+  }
+  drupal_goto("islandora/solr/search/$searchString/1");
+}
+
+/**
+ *
+ * @param <type> $type
+ * @param <type> $term
+ *
+ * parses input from list_terms page before sending reults to solr
+ */
+function islandora_ilives_list($type, $term) {
+  $query = $type . ':("' . strtolower($term) . '") AND dc.type:(collection)';
+  drupal_goto("islandora/solr/search/$query");
+}
+
+function ilives_title_index($current = 'A', $page =1) {
+  $current = strtolower($current);
+  $char = chr(66);
+  $pager = '<div class="item-list"><ul class="pager">';
+  for ($char = 65; $char < 65 + 26; $char++) {
+    $upper = chr($char);
+    $lower = chr($char + 32);
+    $aTag = l($upper, "fedora/ilives/index/$upper");
+    $pager .= "<li class='pager-item'><span class='letter'>$aTag</span></li>";
+  }
+  $pager .= '</ul></div>';
+  $query = "mods.indexTitle:${current}* AND type:collection AND -type:image";
+  $output .= islandora_solr_search($query, $page);
+  $count = substr_count($output, 'islandora-solr-list');
+  $output = $pager . $output;
+  if ($count > 7) {
+    $output .= '<br />' . $pager;
+  }
+
+  return $output;
+}
+
+function ilives_index($type = 'surname', $current = 'A') {
+  $char = chr(66);
+  $pager = '<div class="item-list"><ul class="pager">';
+  for ($char = 65; $char < 65 + 26; $char++) {
+    $upper = chr($char);
+    $lower = chr($char + 32);
+    $aTag = l($upper, "islandora/ilives/index/$type/$upper");
+    $pager .= "<li class='pager-item'><span class='letter'>$aTag</span></li>";
+  }
+  $pager .= '</ul></div>';
+  
+  $output .= getIndexTerms($type, $letter = $current);
+ 
+  $output = $pager . $output;
+  if ($count > 7) {
+    $output .= '<br />' . $pager;
+  }
+
+  return $output;
+}

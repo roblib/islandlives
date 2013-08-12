@@ -1,0 +1,29 @@
+<content_model name="FRACTION_BATCH">
+    <mimetypes>
+        <type>text/xml</type>
+        <type>text/plain</type>
+        <type>application/xml</type>
+        <applies_to>text/comma-separated-values</applies_to>
+        <applies_to>text/csv</applies_to>
+        <applies_to>application/csv</applies_to>
+    </mimetypes>
+    <ingest_rules>
+        <rule>
+            <applies_to>text/xml</applies_to>
+            <applies_to>text/plain</applies_to>
+            <applies_to>application/xml</applies_to>
+            <applies_to>text/comma-separated-values</applies_to>
+            <applies_to>text/csv</applies_to>
+            <applies_to>application/csv</applies_to>
+            <methods/>
+        </rule>
+    </ingest_rules>
+    <ingest_form dsid="DARWIN_CORE" page="2">
+      <form_builder_method>
+        <file>mnpl/FractionBatch.inc</file>
+        <class_name>FractionBatch</class_name>
+        <method_name>buildDrupalForm</method_name>
+        <form_handler>handleBatchIngestForm</form_handler>
+      </form_builder_method>
+    </ingest_form>
+</content_model>

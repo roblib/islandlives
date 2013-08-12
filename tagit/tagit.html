@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" href="http://jqueryui.com/latest/themes/base/ui.all.css" rel="stylesheet" />
+  <script type="text/javascript" src="http://jqueryui.com/latest/jquery-1.3.2.js"></script>
+  <script type="text/javascript" src="http://jqueryui.com/latest/ui/ui.core.js"></script>
+  <script type="text/javascript" src="http://jqueryui.com/latest/ui/ui.dialog.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $("#dialog").dialog();
+  });
+  </script>
+</head>
+<body style="font-size:62.5%;">
+  
+<div id="dialog" title="What keywords would you use to describe this image?">
+<form action="#">
+<input type="textarea" name="keywords"/>
+<input type="submit" name="submit" value="tag it" />
+</form>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Implementation of hook_install().
+ */
+function pidreference_install() {
+  drupal_load('module', 'content');
+  content_notify('install', 'pidreference');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function pidreference_uninstall() {
+  drupal_load('module', 'content');
+  content_notify('uninstall', 'pidreference');
+}
+
+/**
+ * Implementation of hook_enable().
+ * 
+ * Notify content module when this module is enabled.
+ */
+function pidreference_enable() {
+  drupal_load('module', 'content');
+  content_notify('enable', 'pidreference');
+}
+
+/**
+ * Implementation of hook_disable().
+ * 
+ * Notify content module when this module is disabled.
+ */
+function pidreference_disable() {
+  drupal_load('module', 'content');
+  content_notify('disable', 'pidreference');
+}

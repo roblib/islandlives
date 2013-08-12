@@ -1,0 +1,16 @@
+phpMyAdmin/
+nbproject/
+files/
+*.gz
+*.zip
+*.sql
+*.log
+*.tar
+*.settings.php
+settings.php
+*.sh
+*.old
+*.bak
+*.bak2
+*.dm
+.project

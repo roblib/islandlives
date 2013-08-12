@@ -1,0 +1,591 @@
+/*-------------------------------------------------------------------*/
+/*                      Lead Page Background                         */
+/*-------------------------------------------------------------------*/
+
+#page.leadpage {
+  background: #FFF url("images/background_frontpage.jpg") repeat-x left top;
+}
+
+/*-------------------------------------------------------------------*/
+/*                             Header                                */
+/*-------------------------------------------------------------------*/
+
+div#header {
+  background: url("images/header.png") no-repeat bottom left;
+  height: 131px; /* changed */
+  margin: 0;
+  padding: 0;
+}
+
+/*-------------------------------------------------------------------*/
+/*                             Header-Viewer                         */
+/*-------------------------------------------------------------------*/
+
+/* style for the book viewer pages, creating a narrower header area */
+
+div#header-viewer {
+  background: url("images/header_viewer.png") no-repeat bottom left;
+  height: 75px;
+  margin: 0;
+  padding: 0;
+}
+
+#logo-viewer {
+	float:left;
+	height: 75px;
+	width: 205px;
+	margin: 0 10px 0 0;
+	padding:0;
+}
+
+div#head-elements-viewer {
+	height: 32px;
+	margin:0 0 0 15px;
+	padding:0;
+}
+
+#search-box {
+	float:right;
+	margin: 10px 10px 0 0;
+	padding:0;
+}
+
+/*-------------------------------------------------------------------*/
+/*                        Superfish Menu                             */
+/*-------------------------------------------------------------------*/
+
+#superfish-inner .menu li:hover, #superfish-inner .menu li.sfHover, #superfish-inner .menu a:focus, #superfish-inner .menu a:hover, #superfish-inner .menu a:active {
+background: none #96634E !important; 
+}
+
+#superfish-inner .menu li {
+	background: url(images/blank.png) bottom right;
+	font-variant: small-caps;
+	font-size: 110%;
+  	margin: 10px 0 0 0;
+}
+
+#primary ul.links li a {
+  font-weight: bold;
+  padding: 7px 12px 5px 0px;
+}
+
+#superfish-inner .menu a {
+  padding: 7px 12px 5px;
+}
+
+#superfish-inner .menu a:hover {
+  background: #96634E;
+}
+/* makes color consistent with Island Lives palette */
+
+#superfish-inner .menu a, #superfish-inner .menu a:visited {
+	color: #E5D5C0;
+}
+
+/* submenu elements */
+#superfish-inner .menu li li {
+   margin: 0px;
+   font-variant: small-caps;
+   font-size: 90%;
+}
+
+#main {
+	background: #FFF;
+	clear: both; 
+}
+
+#main-lead {
+	clear: both; 
+	background: url("images/background_main.jpg") repeat-x left bottom;
+}
+/* CHANGE: surrounds all the content areas-- only on lead page */
+
+/*-------------------------------------------------------------------*/
+/*                          Header Blocks                            */
+/*-------------------------------------------------------------------*/
+
+/* on the lead page, header blocks have been moved inside the 'main' block, to allow for floating */
+
+/* style for the appearance of the header area */
+#header-blocks {
+	width: 50%;
+	float: right;
+	padding: 0px 0px 5px 0px;
+}
+
+#header-blocks h2 {
+	text-align: left;
+	font-size: 200%;
+	font-weight: 400;
+	line-height: 35px;
+	color: #96634E;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	padding: 10px 0px 0px 20px;
+}
+
+#header-blocks .block-inner {
+	text-align: left;
+	/* height: 300px; */
+	/*float: left;*/
+	padding: 0px 20px 0px 15px;
+}
+
+#header-blocks .block-inner p {
+	font-size: 110%;
+	color: #666666;
+	padding: 0px 0px 0px 0px;
+}
+
+/* 22/06/09 CHANGE: max width & max height */
+#header-blocks .block-inner img {
+	padding: 10px 25px 10px 25px;
+	max-width: 400px;
+    height:auto !important;
+    max-height: 400px;
+    width:auto !important;
+	text-align: center;
+
+
+}
+
+#block-fedora_ilives-1 {
+    min-height: 500px;
+
+}
+
+
+
+
+/*-------------------------------------------------------------------*/
+/*                          Lead Page Blocks                         */
+/*-------------------------------------------------------------------*/
+
+/* project description area */
+
+#content-top {
+	height: 265px;
+	width: 45%;
+	/* float: left; */
+	clear: right;
+}
+
+#content-top .block-inner {
+  	text-align: left;
+	width: 100%;
+  	float: left;
+	font-size: 110%;
+  	margin: 0px 10px 0px 0px;
+  	padding: 0px 10px 0px 20px;
+  	/* font-weight: 200; */
+  	color: #666666;
+}
+
+#content-top h2 {
+	text-align: left;
+	font-size: 180%;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #7B4A39;
+	font-weight: 300;
+	padding: 15px 0px 30px 0px;
+	line-height: 25px;
+}
+
+/* lead page descriptive blocks */
+
+#content-bottom {
+	/* height: 315px; */
+	width: 50%;
+	float: left; /* changed */
+}
+
+#content-bottom .block-inner {
+  	text-align: left;
+	width: 30%;
+	height: 150px;
+  	float: left;
+	font-size: 110%;
+  	/* margin: 0px 10px 0px 0px; */
+  	padding: 10px 10px 0px 60px;
+  	color: #666666;
+}
+
+#content-bottom h2 {
+	text-align: left;
+	font-size: 130%;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #7B4A39;
+	font-weight: 300;
+	padding: 5px 0px 5px 0px;
+	line-height: 20px;
+}
+
+#content #content-inner .feed-icons {
+	display: none;
+}
+
+/*-------------------------------------------------------------------*/
+/*                          Sidebar Blocks                           */
+/*-------------------------------------------------------------------*/
+#sidebar-left, #sidebar-right {
+  background: #FFF;
+}
+#sidebar-left .block,
+#sidebar-right .block {
+  margin: 10px 5px 25px 0px;
+  width: 220px;
+}
+
+/* MODIFIED: removed png images */
+#sidebar-left .block,
+#sidebar-right .block {
+  background: url("") no-repeat top right; /* images/block-tr.png */
+}
+#sidebar-left h2.block-title,
+#sidebar-right h2.block-title {
+	background: url("images/background_block_top.png") no-repeat top left; /* images/block-tl.png */
+	font-size: 18px;
+	color: #865518;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	padding-top: 15px;
+}
+
+#sidebar-left .block-inner,
+#sidebar-right .block-inner {
+  background: url("images/background_block_bottom.png") no-repeat bottom right; /* images/block-br.png */
+  padding: 0px 0px 15px 0px;
+  /* images/background_block_bottom.jpg */
+}
+#sidebar-left .block-content,
+#sidebar-right .block-content {
+  background: url("") no-repeat bottom left; /* images/block-bl.png */
+}
+#sidebar-left .block-content-inner,
+#sidebar-right .block-content-inner {
+  background: url("images/background_block_mid.png") no-repeat top left; /* images/block-tile.png */
+  /* background: url("") no-repeat bottom left;  images/block-tile.png */
+  margin: 0;
+  padding: 10px 15px 10px 20px;
+}
+
+/*-------------------------------------------------------------------*/
+/*                               Node                                */
+/*-------------------------------------------------------------------*/
+
+/* Node Teaser */
+#content-area .node-teaser { 
+  background: url("") no-repeat right top; /* images/teaser-tr.png */
+  margin: 0 0 15px;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+}
+#content-area .node-teaser .node-inner-0 { 
+  background: url("") no-repeat left top; /* images/teaser-tl.png */
+  margin: 0;
+  padding: 10px 0 0;
+  overflow: hidden;
+}
+#content-area .node-teaser .node-inner-1 { 
+  background: url("") no-repeat left bottom; /* images/teaser-bl.png */
+  margin: 0;
+  padding: 0 0 0 10px;
+  overflow: hidden;
+}
+#content-area .node-teaser .node-inner-2 { 
+  background: url("") no-repeat right bottom; /* images/teaser-br.png */
+  margin: 0;
+  padding: 0 10px 10px 0;
+  overflow: hidden;
+}
+
+/*-------------------------------------------------------------------*/
+/*                             Footer                                */
+/*-------------------------------------------------------------------*/
+#footer {
+  height: 140px;
+  font-size: 12px;
+  background: #e4dad0 url("images/background_footer.png") repeat-x top left;
+  border: none;
+  font-weight: normal;
+  color: #000;
+  border-top: 1px solid #eee;
+  clear: both;
+}
+
+.front #footer {
+  border-top: 0px solid #c8c9c4;
+}
+
+/* keeps the syndication icon from floating upward */
+.feed-icons {
+	clear: both;
+}
+
+#footer  h2 {
+	display: none;
+}
+
+#footer a,
+a.active {
+  text-decoration: none;
+  font-weight: bold;
+  color: #185086;
+}
+#footer a:link, a.active:link {
+  color: #185086;
+}
+#footer a:visited, a.active:visited {
+  color: #185086;
+}
+
+#footer a:hover, a.active:hover {
+  text-decoration: underline;
+  color: #0050a6;
+}
+#footer a:focus, a.active:focus {
+  outline: none;
+}
+
+
+/*-------------------------------------------------------------------*/
+/*                             Links                                 */
+/*-------------------------------------------------------------------*/
+
+
+/*-------------------------------------------------------------------*/
+/*                             Views                                 */
+/*-------------------------------------------------------------------*/
+
+/* Pager Items */
+div.item-list ul.pager  {
+border-top: 1px dotted #e2e2e2;
+border-bottom: 1px dotted #e2e2e2;
+background-color: #fcf9f3;
+text-align:center;
+margin-bottom: 1em;
+}
+
+div.item-list ul.pager li a{
+background: transparent;
+
+}
+
+div.item-list ul.pager li.pager-previous {
+clear: left;
+text-align: left;
+}
+
+div.item-list ul.pager li.pager-next {
+display:inline;
+padding-left: 5px;
+}
+
+div.item-list ul.pager li.pager-previous {
+padding-right: 5px;
+}
+
+div.item-list ul.pager li.pager-item {
+text-align: center;
+}
+
+
+/** footer links **/
+
+#footerlinks {
+width: 213px;
+padding: 0px 0px 0px 10px;
+margin: 10px 20px 20px 0;
+float: left;
+border-right: 1px solid #DFCEB8;
+}
+
+#footerlinks .title {
+display: none;
+}
+
+#footerlinks ul li {
+list-style-type: none;
+list-style-image: none;
+padding-bottom: 10px;
+}
+
+#footer-inner .block .block-content{
+width:720px;
+}
+
+
+
+/* Solr Search */
+
+div.item-list ul.pager li.pager-current {
+    background: none repeat scroll 0 0 #946950;
+
+    color: #eddcc7;
+}
+
+div.item-list ul.pager li {
+      font-size: 1.0em;
+          padding: 3px;
+      }
+
+.islandora-solr-list table,
+.islandora-solr-detail table {
+  background-color: #FCF9F3;
+  font-size: 1.03em;
+}
+
+.islandora-solr-search td a.solr-fullrec,
+.islandora-solr-detail td a.solr-fullrec {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -86px transparent;
+}
+
+.islandora-solr-search td a.solr-readonline,
+.islandora-solr-detail td a.solr-readonline {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -22px transparent;
+}
+
+.islandora-solr-search td a.solr-borrow,
+.islandora-solr-detail td a.solr-borrow {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -65px transparent;
+}
+
+.islandora-solr-search td a.solr-download,
+.islandora-solr-detail td a.solr-download {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -107px transparent;
+}
+
+.islandora-solr-search td a.solr-edit,
+.islandora-solr-detail td a.solr-edit {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -44px transparent;
+}
+
+.islandora-solr-search td a.solr-admin,
+.islandora-solr-detail td a.solr-admin {
+  padding-left: 22px;
+  background: url(images/solr-search-icons.png) no-repeat 0px -1px transparent;
+}
+
+.islandora-solr-search td,
+.islandora-solr-detail td,
+.islandora-solr-search th,
+.islandora-solr-detail th {
+  border: 1px solid #deddd9;
+}
+
+.islandora-solr-detail .solr-tn-large img {
+border: 1px solid #ccc;
+}
+
+/*solr page grid */
+
+/* Search Block */
+
+#superfish #islandora-solr-simple-search-form,
+#superfish #ilives-solr-simple-search-block-form {
+float: right;
+padding-top: 3px;
+padding-right: 15px;
+}
+
+#superfish #google-cse-searchbox-form .form-item,
+#superfish #islandora-solr-simple-search-form .form-item,
+#superfish #ilives-solr-simple-search-block-form {
+margin: 0px;
+float: right;
+}
+  
+#superfish #google-cse-searchbox-form .form-item label,
+#superfish #islandora-solr-simple-search-form .form-item label,
+#superfish #search-box .form-item label,
+#superfish #search-block-form .form-item label,
+#superfish #ilives-solr-simple-search-block-form .form-item label { 
+ color: #fff; /* Wrapper for the search form */
+}  
+  
+#superfish #google-cse-searchbox-form .form-item input,
+#superfish #islandora-solr-simple-search-form .form-item input, 
+#superfish #search-box .form-item input,
+#superfish #search-block-form .form-item input,
+#superfish #ilives-solr-simple-search-block-form .form-item input {
+  margin: 1px 0px 0 0;
+  width: 200px;
+  display: inline;
+  height: 17px;
+  font-size: 9.5pt;
+  color: #e0d0bb;
+  -moz-border-radius: 3px;
+  border-top-right: 3px;
+  -moz-border-radius: 3px;
+  border-top-left: 3px;
+  padding-right: 20px;
+   padding-left: 5px;
+  border: 1px solid #724632;
+  -moz-box-shadow:0 1px 0 #967662;
+  background: #b19581 url(images/insearch-magglass2.png) no-repeat right center;
+  opacity:0.8;filter:alpha(opacity=80);
+}
+
+#superfish #google-cse-searchbox-form .form-item input:hover,
+#superfish #islandora-solr-simple-search-form .form-item input:hover, 
+#superfish #search-box .form-item input:hover,
+#superfish #search-block-form .form-item input:hover,
+#superfish  #ilives-solr-simple-search-block-form input:hover{
+background: #ddccb9 url(images/insearch-magglass.png) no-repeat right center;
+color: #8f624a;
+}
+
+#superfish #google-cse-searchbox-form .form-item input:focus,
+#superfish #islandora-solr-simple-search-form .form-item input:focus, 
+#superfish #search-box .form-item input:focus,
+#superfish #search-block-form .form-item input:focus,
+#superfish  #ilives-solr-simple-search-block-form  .form-item input:focus{
+-moz-box-shadow: 0 0 3px #724632;
+background:#fff url(images/insearch-magglass.png) no-repeat right center;
+border:1px solid #79503f;
+color:#7B4a39;
+outline-color:-moz-use-text-color;
+outline-style:none;
+outline-width:medium;
+text-shadow:0 1px 0 #FFFFFF;
+}
+
+
+#superfish #google-cse-searchbox-form  input.form-submit, 
+#superfish #islandora-solr-simple-search-form input.form-submit, 
+#superfish #search-form input.form-submit, 
+#superfish #search-box input.form-submit,
+#superfish #search-block-form input.form-submit,
+#superfish  #ilives-solr-simple-search-block-form  input.form-submit{
+height: 21px;
+width: 21px;
+cursor: pointer;
+text-indent: -9999px;
+border: none;
+/* background: url(../images/mag_glass/grey-mag_glass.png) no-repeat left top;  */
+display: none;
+clear: right;
+}
+  
+#superfish #google-cse-searchbox-form  .block-search .form-item  textarea:focus,
+#superfish #islandora-solr-simple-search-form  .block-search .form-item  textarea:focus, 
+#superfish #islandora-solr-simple-search-form  .block-search .form-item  textarea:focus input:focus, 
+#superfish #search-form  .block-search .form-item  textarea:focus, 
+#superfish #search-form  .block-search .form-item  textarea:focus input:focus,
+#superfish #search-block-form .block-search .form-item  textarea:focus,
+#superfish #search-block-form .block-search .form-item  textarea:focus  input:focus,
+#superfish  #ilives-solr-simple-search-block-form  input.form-submit .block-search .form-item  textarea:focus  input:focus{
+
+{
+  border: 2px solid #2E5067;
+}
+
+#edit-islandora-simple-search-query-wrapper .form-item {
+margin-bottom: 0;
+}
+

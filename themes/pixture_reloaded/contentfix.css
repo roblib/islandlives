@@ -1,0 +1,16 @@
+#content-bottom {
+float:left;
+width:100%;
+}
+
+#content {
+position:relative;
+text-align:left;
+width:47%;
+z-index:1;
+}
+
+#content-top {
+height:265px;
+width:100%;
+}

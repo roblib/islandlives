@@ -1,0 +1,103 @@
+<?php
+
+// $Id$
+
+
+/**
+ * @file
+ * Configuration module for islandora_solr_search.module
+ */
+
+/**
+ * Implementation of hook_alter_form.
+ * Adds this module's configuration options to islandora_solr_search's configuration page.
+ */
+function iLives_solr_config_form_islandora_solr_admin_settings_alter(&$form, &$form_state) {
+  $module = 'iLives_solr_config';
+  $file = 'iLivesResults';
+  $class = 'iLivesSolrResults';
+  $method = 'displayResults';
+  $config_options = $form['islandora_solr_config_options']['#options'];
+  $config_options["${module}~${file}~${class}~${method}"] = 'iLives';
+  $form['islandora_solr_config_options']['#options'] = $config_options;
+}
+
+/**
+ * Implementation of hook_help()
+ */
+function iLives_solr_config_help($path, $arg) {
+
+  switch ($path) {
+    case 'admin/help#iLives_solr_config':
+      return t("When 'iLives' is selected from the configuration dropdown in the<br />
+        !page the following settings will be used.
+        <ul>
+        <li>Module - iLives_solr_config</l1>
+        <li>File - iLivesResults.inc</l1>
+        <li>Class - iLivesSolrResults</l1>
+        <li>Method - displayResults</l1>
+        </ul>
+        ", array('!page' => l("Islandora Solr Search configuration page", 'admin/settings/islandora_solr_search'),)
+      );
+  }
+}
+
+
+function getIndexTerms($type = 'surname', $letter = 'A') {
+  $page = isset($_GET['page']) ? $_GET['page'] : '';
+  module_load_include('php', 'islandora_solr_search', 'Solr/Service');
+  module_load_include('inc', 'islandora_solr_search', 'IslandoraSolrResults');
+  $types = array(
+    'surname' => 'tei.surname',
+    'places' => 'tei.placeName',
+    'organizations' => 'tei.orgName'
+  );
+  $type = $types[$type];
+  $url = variable_get('islandora_solr_search_block_url', 'localhost:8080/solr');
+  $pathParts = parse_url($url);
+  $solr = new Apache_Solr_Service($pathParts['host'], $pathParts['port'], $pathParts['path'] . '/');
+  $query = "type:collection AND PID:ilives*";
+  $additionalParams = array(
+    'fl' => $type,
+  );
+  $allArray = array();
+  $more = TRUE;
+  $startNum = 1;
+  while ($more) {
+    $results = $solr->search($query, $startNum, 2000, $additionalParams);
+    foreach ($results->response->docs as $doc) {
+      foreach ($doc as $field => $value) {
+        if(!is_array($value)){
+          $value = array($value);
+        }
+        foreach ($value as $name) {
+          $name = trim(preg_replace('[/\W/|\s+]', ' ', $name));
+          if (strlen($name) > 2 && strpos(strtoupper($name), $letter) === 0) {
+            $allArray[] = $name;
+          }
+        }
+        $allArray = array_unique($allArray);
+      }
+    }
+    $startNum = $startNum + 2000;
+    if ($startNum > $total) {
+      $more = FALSE;
+    }
+  }
+  sort($allArray);
+  $first = ($page * 40) + 1;
+  for ($entry = $first; $entry < $first + 40; $entry++) {
+    $name = $allArray[$entry];
+    $solrTerm = "\"$name\"";
+    $link = l($name, "islandora/solr/search/$type:$solrTerm AND dc.type:(collection)/1");
+    $links .= "$link <br>";
+  }
+  $total = count($allArray);
+  islandora_solr_search_pager_init($total, 40);
+  $output .= "";
+
+  $output .= theme('pager');
+  $output .= $links;
+  $output .= theme('pager');
+  return $output;
+}
